@@ -6,10 +6,14 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router-dom": "^6.23.0",
-    "lucide-react": "0.390.0",
+    "lucide-react": "^0.469.0",
     "recharts": "^2.12.7",
     "date-fns": "^3.6.0",
     "@libsql/client": "0.14.0"
+  },
+  "overrides": {
+    "react": "$react",
+    "react-dom": "$react-dom"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
