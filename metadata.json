@@ -1,0 +1,5 @@
+{
+  "name": "LabMaster (Cloud)",
+  "description": "Laboratory sample management system handling disposal and return workflows with automated storage assignment and due date tracking using Turso DB.",
+  "requestFramePermissions": []
+}
