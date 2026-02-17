@@ -10,22 +10,41 @@ import SettingsPage from './pages/Settings';
 import { initDB } from './services/db';
 
 const App: React.FC = () => {
-  const [dbReady, setDbReady] = useState(false);
+  const [appState, setAppState] = useState<'loading' | 'ready' | 'error'>('loading');
 
   useEffect(() => {
     const initialize = async () => {
-      await initDB();
-      setDbReady(true);
+      const success = await initDB();
+      if (success) {
+        setAppState('ready');
+      } else {
+        setAppState('error');
+      }
     };
     initialize();
   }, []);
 
-  if (!dbReady) {
+  if (appState === 'loading') {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center bg-gray-50 gap-4">
          <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
          <div className="text-gray-500 font-medium">กำลังโหลดข้อมูลระบบ...</div>
       </div>
+    );
+  }
+
+  if (appState === 'error') {
+    return (
+        <div className="flex h-screen w-full flex-col items-center justify-center bg-red-50 p-6 text-center">
+            <div className="text-red-500 font-bold text-xl mb-2">ไม่สามารถเชื่อมต่อฐานข้อมูลได้</div>
+            <p className="text-gray-600 mb-4">กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตหรือติดต่อผู้ดูแลระบบ</p>
+            <button 
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700"
+            >
+                ลองใหม่
+            </button>
+        </div>
     );
   }
 

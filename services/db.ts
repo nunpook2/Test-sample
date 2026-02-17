@@ -10,7 +10,7 @@ export const db = createClient({
   authToken: TURSO_AUTH_TOKEN,
 });
 
-export const initDB = async () => {
+export const initDB = async (): Promise<boolean> => {
   try {
     // Jobs Table
     await db.execute(`
@@ -45,8 +45,10 @@ export const initDB = async () => {
     }
 
     console.log("Database initialized successfully");
+    return true;
   } catch (error) {
     console.error("Database initialization failed:", error);
+    return false;
   }
 };
 
