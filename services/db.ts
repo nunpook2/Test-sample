@@ -1,7 +1,7 @@
 import { createClient } from '@libsql/client/web';
 import { Job, Employee, ActionType } from '../types';
 
-// Hardcoded credentials as requested by the user prompt
+// Use HTTPS for web client compatibility
 const TURSO_URL = 'https://test-chaiyapat.aws-ap-south-1.turso.io';
 const TURSO_AUTH_TOKEN = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3NzEzMDk3NTMsImlkIjoiZTZjM2MzMTQtZjJlYy00YmZlLWFhZmItMTU2ZWJiYmM2YzExIiwicmlkIjoiOWY4ZjQ5ZTAtODZjZS00N2ZlLWFmNTItMGNiMmE4OWJkMWE1In0.kHVA6PnqcFnHpsplSEWZD4ZAsfd0iA0m0yPlTHqxVKhAKr2dwCnaETw_3FVHHnw-lvmevMRycX_7lnOt3OdrBQ';
 
@@ -12,6 +12,9 @@ export const db = createClient({
 
 export const initDB = async (): Promise<boolean> => {
   try {
+    // Attempt a simple query to verify connection immediately
+    await db.execute("SELECT 1");
+
     // Jobs Table
     await db.execute(`
       CREATE TABLE IF NOT EXISTS jobs (
@@ -65,6 +68,13 @@ export const addEmployee = async (name: string) => {
     await db.execute({
         sql: "INSERT INTO employees (id, name) VALUES (?, ?)",
         args: [id, name]
+    });
+};
+
+export const updateEmployee = async (id: string, name: string) => {
+    await db.execute({
+        sql: "UPDATE employees SET name = ? WHERE id = ?",
+        args: [name, id]
     });
 };
 
