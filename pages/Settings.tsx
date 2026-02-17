@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { getEmployees, addEmployee, deleteEmployee, updateEmployee } from '../services/db';
+import { getEmployees, addEmployee, deleteEmployee, updateEmployee, resetDatabase } from '../services/db';
 import { Employee } from '../types';
-import { UserPlus, Trash, Shield, Info, LogOut, Edit2, X, Check } from 'lucide-react';
+import { UserPlus, Trash, Shield, Info, LogOut, Edit2, X, Check, RefreshCcw, AlertTriangle } from 'lucide-react';
 
 const SettingsPage: React.FC = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [newEmpName, setNewEmpName] = useState('');
-  const [trialMode, setTrialMode] = useState(true);
   
+  // Trial Mode Persistence
+  const [trialMode, setTrialMode] = useState(() => {
+    return localStorage.getItem('labMaster_trialMode') === 'true';
+  });
+
   // Edit State
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
@@ -15,6 +19,12 @@ const SettingsPage: React.FC = () => {
   useEffect(() => {
     loadEmp();
   }, []);
+
+  const toggleTrialMode = () => {
+      const newValue = !trialMode;
+      setTrialMode(newValue);
+      localStorage.setItem('labMaster_trialMode', String(newValue));
+  };
 
   const loadEmp = () => {
     getEmployees().then(setEmployees);
@@ -54,6 +64,20 @@ const SettingsPage: React.FC = () => {
     }
   };
 
+  const handleResetData = async () => {
+      if (!trialMode) return;
+      
+      const confirmText = prompt("พิมพ์ 'RESET' เพื่อยืนยันการลบข้อมูลใบงานทั้งหมด (รายชื่อพนักงานจะไม่ถูกลบ)");
+      if (confirmText === 'RESET') {
+          const success = await resetDatabase();
+          if (success) {
+              alert("ล้างข้อมูลเรียบร้อยแล้ว");
+          } else {
+              alert("เกิดข้อผิดพลาด");
+          }
+      }
+  };
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
        <div className="mb-6">
@@ -67,14 +91,30 @@ const SettingsPage: React.FC = () => {
                   <Shield size={18} className="text-blue-500" /> โหมดการใช้งาน
               </h3>
               <div className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
-                <input type="checkbox" name="toggle" id="toggle" checked={trialMode} onChange={() => setTrialMode(!trialMode)} className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-blue-500 checked:right-0 right-6"/>
+                <input type="checkbox" name="toggle" id="toggle" checked={trialMode} onChange={toggleTrialMode} className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-blue-500 checked:right-0 right-6"/>
                 <label htmlFor="toggle" className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer ${trialMode ? 'bg-blue-500' : 'bg-gray-300'}`}></label>
             </div>
           </div>
-          <div className="p-4 bg-blue-50 text-blue-800 text-xs flex gap-2">
+          <div className={`p-4 text-xs flex gap-2 ${trialMode ? 'bg-blue-50 text-blue-800' : 'bg-gray-50 text-gray-500'}`}>
               <Info size={16} className="shrink-0" />
-              {trialMode ? 'ระบบกำลังทำงานในโหมดทดลอง (Trial). ข้อมูลอาจถูกรีเซ็ตได้' : 'ระบบทำงานในโหมดจริง (Production)'}
+              {trialMode ? 'ระบบกำลังทำงานในโหมดทดลอง (Trial). ท่านสามารถล้างข้อมูลทดสอบได้' : 'ระบบทำงานในโหมดจริง (Production). ข้อมูลจะถูกบันทึกถาวร'}
           </div>
+          
+          {trialMode && (
+              <div className="p-4 bg-red-50 border-t border-red-100">
+                  <div className="flex items-center justify-between">
+                      <div className="text-red-800 text-sm font-bold flex items-center gap-2">
+                          <AlertTriangle size={18} /> โซนอันตราย (สำหรับทดสอบ)
+                      </div>
+                      <button 
+                        onClick={handleResetData}
+                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm transition-colors"
+                      >
+                          <RefreshCcw size={16} /> ล้างข้อมูลใบงานทั้งหมด
+                      </button>
+                  </div>
+              </div>
+          )}
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">

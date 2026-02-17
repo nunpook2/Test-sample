@@ -55,6 +55,18 @@ export const initDB = async (): Promise<boolean> => {
   }
 };
 
+export const resetDatabase = async () => {
+    try {
+        await db.execute("DELETE FROM jobs");
+        // We keep employees for convenience, or you can delete them too
+        console.log("All jobs deleted (Trial Reset)");
+        return true;
+    } catch (e) {
+        console.error("Reset failed", e);
+        return false;
+    }
+};
+
 export const getEmployees = async (): Promise<Employee[]> => {
   const result = await db.execute("SELECT * FROM employees ORDER BY name ASC");
   return result.rows.map(row => ({
