@@ -1,7 +1,7 @@
 import { createClient } from '@libsql/client/web';
 import { Job, Employee, ActionType } from '../types';
 
-// Use HTTPS for web client compatibility
+// Use HTTPS for web client compatibility (converted from libsql://)
 const TURSO_URL = 'https://test-chaiyapat.aws-ap-south-1.turso.io';
 const TURSO_AUTH_TOKEN = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3NzEzMDk3NTMsImlkIjoiZTZjM2MzMTQtZjJlYy00YmZlLWFhZmItMTU2ZWJiYmM2YzExIiwicmlkIjoiOWY4ZjQ5ZTAtODZjZS00N2ZlLWFmNTItMGNiMmE4OWJkMWE1In0.kHVA6PnqcFnHpsplSEWZD4ZAsfd0iA0m0yPlTHqxVKhAKr2dwCnaETw_3FVHHnw-lvmevMRycX_7lnOt3OdrBQ';
 

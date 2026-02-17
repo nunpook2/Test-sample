@@ -90,10 +90,17 @@ const SettingsPage: React.FC = () => {
               <h3 className="font-bold text-gray-700 flex items-center gap-2">
                   <Shield size={18} className="text-blue-500" /> โหมดการใช้งาน
               </h3>
-              <div className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
-                <input type="checkbox" name="toggle" id="toggle" checked={trialMode} onChange={toggleTrialMode} className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-blue-500 checked:right-0 right-6"/>
-                <label htmlFor="toggle" className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer ${trialMode ? 'bg-blue-500' : 'bg-gray-300'}`}></label>
-            </div>
+              
+              {/* Modern Tailwind Toggle Switch */}
+              <button 
+                onClick={toggleTrialMode}
+                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${trialMode ? 'bg-blue-600' : 'bg-gray-200'}`}
+              >
+                <span className="sr-only">Use trial mode</span>
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${trialMode ? 'translate-x-6' : 'translate-x-1'}`}
+                />
+              </button>
           </div>
           <div className={`p-4 text-xs flex gap-2 ${trialMode ? 'bg-blue-50 text-blue-800' : 'bg-gray-50 text-gray-500'}`}>
               <Info size={16} className="shrink-0" />
